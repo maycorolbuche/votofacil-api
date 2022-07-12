@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\JWT;
 use App\Models\Room;
 use Illuminate\Http\Request;
-use App\Helpers\JWT;
 
 class RoomController extends Controller
 {
@@ -32,7 +32,7 @@ class RoomController extends Controller
         return $hash;
     }
 
-    public function create()
+    public function create(Request $request)
     {
         $err = true;
         $len = 5;
@@ -42,6 +42,7 @@ class RoomController extends Controller
                 $hash = $this->hash($len);
                 $room = new Room;
                 $room->hash = $hash;
+                $room->name = $request->name;
                 $room->save();
                 $err = false;
             } catch (\Exception $e) {

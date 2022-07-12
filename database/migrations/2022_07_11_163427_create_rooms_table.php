@@ -17,6 +17,7 @@ class CreateRoomsTable extends Migration
             $table->increments('id');
             $table->string('hash',10)->unique()->nullable();
             $table->string('old_hash',10)->nullable();
+            $table->string('name',50)->nullable();
             $table->timestamps();
         });
     }
