@@ -16,4 +16,4 @@
 $router->get('/', function () use ($router) {
     return $router->app->version();
 });
-$router->get('/rooms', 'RoomController@findAll');
+$router->post('/rooms', 'RoomController@create');
