@@ -16,7 +16,8 @@ class CreateDevicesTable extends Migration
         Schema::create('devices', function (Blueprint $table) {
             $table->increments('id_device');
             $table->unsignedInteger('id_room');
-            $table->enum('type',['user', 'preview']);
+            $table->enum('type_user', ['user', 'preview']);
+            $table->enum('status', ['approved', 'disapproved', 'pending']);
             $table->timestamps();
 
             $table->foreign('id_room')->references('id_room')->on('rooms');

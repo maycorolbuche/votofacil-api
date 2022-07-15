@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Room extends Model
 {
     protected $fillable = [
-        'id','hash','old_hash','name'
+        'id_room','hash','old_hash','name'
     ];
 
 }

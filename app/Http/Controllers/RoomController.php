@@ -34,6 +34,11 @@ class RoomController extends Controller
 
     public function create(Request $request)
     {
+        //
+    }
+
+    public function store(Request $request)
+    {
         $err = true;
         $len = 5;
 
@@ -43,6 +48,7 @@ class RoomController extends Controller
                 $room = new Room;
                 $room->hash = $hash;
                 $room->name = $request->name;
+                $room->status = 'open';
                 $room->save();
                 $err = false;
             } catch (\Exception $e) {
@@ -52,30 +58,22 @@ class RoomController extends Controller
         }
 
         if ($err) {
-            return response()->json(['error' => 'Não foi possível criar uma sala!'], 404);
+            return response()->json(['error' => 'Não foi possível criar uma sala!'], 500);
         }
 
         $token = JWT::sign([
             'type' => 'admin',
-            'id' => $room->id,
+            'id_room' => $room->id,
             'hash' => $room->hash,
         ]);
 
         if ($token == "") {
-            return response()->json(['error' => 'Não foi possível criar token!'], 404);
+            return response()->json(['error' => 'Não foi possível criar token!'], 500);
         }
 
         $room->token = $token;
 
         return $room;
-    }
-
-    public function store(Request $request)
-    {
-        $room = new Room;
-        $room->teste = $request->teste;
-        $room->save();
-        return response()->json($room);
     }
 
     public function show(Room $room)

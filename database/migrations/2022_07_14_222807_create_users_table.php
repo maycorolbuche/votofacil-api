@@ -17,6 +17,7 @@ class CreateUsersTable extends Migration
             $table->increments('id_user');
             $table->unsignedInteger('id_room');
             $table->unsignedInteger('id_device');
+            $table->string('name',250);
             $table->enum('type',['user', 'preview']);
             $table->timestamps();
 

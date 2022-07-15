@@ -14,6 +14,8 @@
 */
 
 $router->get('/', function () use ($router) {
-    return $router->app->version();
+    return "API Voto Fácil";
+    //return $router->app->version();
 });
-$router->post('/rooms', 'RoomController@create');
+$router->post('/rooms', 'RoomController@store');
+$router->post('/devices', 'DeviceController@store');

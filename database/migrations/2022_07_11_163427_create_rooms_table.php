@@ -18,6 +18,7 @@ class CreateRoomsTable extends Migration
             $table->string('hash',10)->unique()->nullable();
             $table->string('old_hash',10)->nullable();
             $table->string('name',50)->nullable();
+            $table->enum('status', ['open', 'closed']);
             $table->timestamps();
         });
     }
