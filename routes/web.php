@@ -19,3 +19,6 @@ $router->get('/', function () use ($router) {
 });
 $router->post('/rooms', 'RoomController@store');
 $router->post('/devices', 'DeviceController@store');
+
+//CACHE
+//https://lumen.laravel.com/docs/5.1/cache
