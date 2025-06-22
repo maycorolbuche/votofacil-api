@@ -19,6 +19,7 @@ class RoomController extends Controller
     public function store(Request $request)
     {
         $err = true;
+        $err_description = '';
         $len = 5;
 
         while ($err && $len < 10) {
@@ -30,12 +31,13 @@ class RoomController extends Controller
                 $err = false;
             } catch (\Exception $e) {
                 $err = true;
+                $err_description = $e->getMessage();
                 $len++;
             }
         }
 
         if ($err) {
-            return response()->json(['error' => 'Não foi possível criar uma sala!'], 500);
+            return response()->json(['error' => 'Não foi possível criar uma sala!', 'description' => $err_description], 500);
         }
 
         $token = JWT::sign([
