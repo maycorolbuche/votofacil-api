@@ -9,13 +9,6 @@ use Illuminate\Http\Request;
 
 class RoomController extends Controller
 {
-    public function __construct() {}
-
-    public function create(Request $request)
-    {
-        //
-    }
-
     public function store(Request $request)
     {
         $err = true;
@@ -74,11 +67,6 @@ class RoomController extends Controller
         }
 
         return $room;
-    }
-
-    public function edit(Room $room)
-    {
-        //
     }
 
     public function update(Request $request, Room $room)
