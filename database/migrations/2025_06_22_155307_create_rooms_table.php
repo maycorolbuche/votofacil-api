@@ -13,11 +13,10 @@ return new class extends Migration
     {
         Schema::create('rooms', function (Blueprint $table) {
             $table->id();
-            $table->string('token')->unique();
-            $table->string('uuid')->unique();
-            $table->string('name');
+            $table->string('code')->unique();
+            $table->string('uuid')->unique()->nullable();
+            $table->string('name')->nullable();
             $table->boolean('is_active')->default(true);
-            $table->boolean('is_voting_open')->default(false);
             $table->timestamps();
         });
     }
