@@ -9,4 +9,4 @@ $router->get('/install', 'InstallController@index');
 $router->post('/room', 'RoomController@store');
 $router->post('/rooms', 'RoomController@store');
 
-$router->get('/rooms', 'RoomController@store'); /* APAGAR DEPOIS */
+$router->get('/room', 'RoomController@show');

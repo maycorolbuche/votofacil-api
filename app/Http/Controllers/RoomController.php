@@ -55,9 +55,25 @@ class RoomController extends Controller
         return $room;
     }
 
-    public function show(Room $room)
+    public function show(Room $room, Request $request)
     {
-        //
+        $authToken = JWT::isAdmin();
+
+        if (!$authToken) {
+            return response()->json(['error' => 'Token inválido!'], 500);
+        }
+
+        $room = Room::where('id', $authToken['room_id'])->first();
+
+        if (!$room) {
+            return response()->json(['error' => 'Sala não encontrada!'], 500);
+        }
+
+        if ($room->is_active == false) {
+            return response()->json(['error' => 'Sala não está ativa!'], 500);
+        }
+
+        return $room;
     }
 
     public function edit(Room $room)

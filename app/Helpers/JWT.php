@@ -57,4 +57,30 @@ class JWT
 
         return $payload;
     }
+
+    public static function getTokens()
+    {
+        if (!request()->header("authorization")) {
+            return false;
+        }
+
+        $authHeader = request()->header("authorization");
+        $pairs = explode(',', $authHeader);
+        $result = [];
+        foreach ($pairs as $pair) {
+            [$key, $value] = explode('=', $pair, 2);
+            $result[trim($key)] = trim($value);
+        }
+
+        return $result;
+    }
+    public static function isAdmin()
+    {
+        $tokens = self::getTokens();
+        if (!$tokens) {
+            return false;
+        }
+
+        return self::verify($tokens["admin"]);
+    }
 }
