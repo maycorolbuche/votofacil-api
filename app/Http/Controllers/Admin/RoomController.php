@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Helpers\Code;
 use App\Helpers\JWT;
-use App\Helpers\CheckStatus;
 use App\Models\Room;
 use Illuminate\Http\Request;
 
@@ -51,7 +51,7 @@ class RoomController extends Controller
 
     public function show()
     {
-        return CheckStatus::room();
+        return request()->input('auth');
     }
 
     public function update(Request $request, Room $room)

@@ -5,11 +5,21 @@ $router->get('/', function () use ($router) {
 
 $router->get('/install', 'InstallController@index');
 
-// Rooms
-$router->post('/room', 'RoomController@store');
-$router->get('/room', 'RoomController@show');
+$router->group(['prefix' => 'admin'], function () use ($router) {
+    $router->post('/room', 'Admin\RoomController@store');
 
-// Devices
-$router->post('/device', 'DeviceController@store');
-$router->get('/device', 'DeviceController@show');
-$router->delete('/device', 'DeviceController@destroy');
+    $router->group(['middleware' => ['auth-admin']], function () use ($router) {
+        $router->get('/room', 'Admin\RoomController@show');
+    });
+});
+
+$router->group(['prefix' => 'user'], function () use ($router) {
+    $router->post('/device', 'User\DeviceController@store');
+
+    $router->group(['middleware' => ['auth-user']], function () use ($router) {
+        $router->get('/device', 'User\DeviceController@show');
+        $router->delete('/device', 'User\DeviceController@destroy');
+
+        $router->get('/sync', 'User\SyncController@index');
+    });
+});

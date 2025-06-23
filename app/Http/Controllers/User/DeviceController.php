@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\User;
 
+use App\Http\Controllers\Controller;
 use App\Helpers\JWT;
-use App\Helpers\CheckStatus;
 use App\Models\Device;
 use App\Models\Room;
 use Illuminate\Http\Request;
@@ -51,9 +51,9 @@ class DeviceController extends Controller
         return $device;
     }
 
-    public function show(Room $room)
+    public function show()
     {
-        return CheckStatus::device();
+        return request()->input('auth');
     }
 
     public function edit(Room $room)

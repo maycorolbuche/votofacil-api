@@ -10,24 +10,24 @@ class CheckStatus
 {
     public static function checkRoom($id)
     {
-        $room = Room::firstWhere('id', $id);
+        $room = Room::select(['id', 'code', 'is_active'])->firstWhere('id', $id);
 
         if (!$room) {
             return ['error' => 'Sala não encontrada!'];
         }
 
         if ($room->is_active == false) {
-            return ['error' => 'Sala não está ativa!'];
+            return ['error' => 'Sala "' . $room->code . '" não está ativa!'];
         }
 
         return $room;
     }
     public static function checkDevice($id)
     {
-        $device = Device::with('room')->firstWhere('id', $id);
+        $device = Device::select(['id', 'room_id', 'status'])->firstWhere('id', $id);
 
         if (!$device) {
-            return response()->json(['error' => 'Dispositivo não encontrado!'], 500);
+            return ['error' => 'Dispositivo não encontrado!'];
         }
 
         if ($device->status == 'disapproved') {
@@ -42,15 +42,15 @@ class CheckStatus
         $authToken = JWT::isAdmin();
 
         if (!$authToken) {
-            return response()->json(['error' => 'Token inválido!'], 500);
+            return ['error' => 'Token inválido!'];
         }
 
         $room = self::checkRoom($authToken['room_id']);
         if ($room['error']) {
-            return response()->json(['error' => $room['error']], 500);
+            return ['error' => $room['error']];
         }
 
-        return $room;
+        return ['room_id' => $room->id, 'code' => $room->code, 'is_active' => $room->is_active];
     }
 
     public static function device()
@@ -58,15 +58,15 @@ class CheckStatus
         $authToken = JWT::isUser();
 
         if (!$authToken) {
-            return response()->json(['error' => 'Token inválido!'], 500);
+            return ['error' => 'Token inválido!'];
         }
 
         $room = self::checkRoom($authToken['room_id']);
         if ($room['error']) {
-            return response()->json(['error' => $room['error']], 500);
+            return ['error' => $room['error']];
         }
 
         $device = self::checkDevice($authToken['device_id']);
-        return $device;
+        return ['room_id' => $room->id, 'code' => $room->code, 'is_active' => $room->is_active, 'device_id' => $device->id, 'status' => $device->status];
     }
 }
