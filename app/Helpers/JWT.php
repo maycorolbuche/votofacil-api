@@ -74,6 +74,7 @@ class JWT
 
         return $result;
     }
+
     public static function isAdmin()
     {
         $tokens = self::getTokens();
@@ -81,6 +82,26 @@ class JWT
             return false;
         }
 
-        return self::verify($tokens["admin"]);
+        $data = self::verify($tokens["admin"]);
+        if ($data['type'] != 'admin') {
+            return false;
+        }
+
+        return $data;
+    }
+
+    public static function isUser()
+    {
+        $tokens = self::getTokens();
+        if (!$tokens) {
+            return false;
+        }
+
+        $data = self::verify($tokens["user"]);
+        if ($data['type'] != 'user') {
+            return false;
+        }
+
+        return $data;
     }
 }

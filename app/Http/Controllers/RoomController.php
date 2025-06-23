@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\Code;
 use App\Helpers\JWT;
+use App\Helpers\CheckStatus;
 use App\Models\Room;
 use Illuminate\Http\Request;
 
@@ -30,7 +31,7 @@ class RoomController extends Controller
         }
 
         if ($err) {
-            return response()->json(['error' => 'Não foi possível criar uma sala!', 'description' => $err_description], 500);
+            return response()->json(['error' => 'Não foi possível criar uma sala - ' . $err_description], 500);
         }
 
         $token = JWT::sign([
@@ -48,25 +49,9 @@ class RoomController extends Controller
         return $room;
     }
 
-    public function show(Room $room, Request $request)
+    public function show()
     {
-        $authToken = JWT::isAdmin();
-
-        if (!$authToken) {
-            return response()->json(['error' => 'Token inválido!'], 500);
-        }
-
-        $room = Room::where('id', $authToken['room_id'])->first();
-
-        if (!$room) {
-            return response()->json(['error' => 'Sala não encontrada!'], 500);
-        }
-
-        if ($room->is_active == false) {
-            return response()->json(['error' => 'Sala não está ativa!'], 500);
-        }
-
-        return $room;
+        return CheckStatus::room();
     }
 
     public function update(Request $request, Room $room)

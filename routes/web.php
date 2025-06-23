@@ -7,6 +7,8 @@ $router->get('/install', 'InstallController@index');
 
 // Rooms
 $router->post('/room', 'RoomController@store');
-$router->post('/rooms', 'RoomController@store');
-
 $router->get('/room', 'RoomController@show');
+
+// Devices
+$router->post('/device', 'DeviceController@store');
+$router->get('/device', 'DeviceController@show');
