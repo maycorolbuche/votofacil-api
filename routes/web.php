@@ -12,3 +12,4 @@ $router->get('/room', 'RoomController@show');
 // Devices
 $router->post('/device', 'DeviceController@store');
 $router->get('/device', 'DeviceController@show');
+$router->delete('/device', 'DeviceController@destroy');

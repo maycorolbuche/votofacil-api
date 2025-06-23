@@ -68,6 +68,14 @@ class DeviceController extends Controller
 
     public function destroy(Room $room)
     {
-        //
+        $authToken = JWT::isUser();
+
+        if (!$authToken) {
+            return response()->json(['error' => 'Token inválido!'], 500);
+        }
+
+        $device = Device::where('id', $authToken['device_id'])->delete();
+
+        return $device;
     }
 }
