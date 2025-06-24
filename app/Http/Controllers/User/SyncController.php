@@ -25,6 +25,6 @@ class SyncController extends Controller
             return $data;
         }
 
-        return request()->input('auth');
+        return $data;
     }
 }

@@ -67,6 +67,9 @@ class CheckStatus
         }
 
         $device = self::checkDevice($authToken['device_id']);
+        if ($device['error']) {
+            return ['error' => $device['error']];
+        }
         return ['room_id' => $room->id, 'code' => $room->code, 'is_active' => $room->is_active, 'device_id' => $device->id, 'status' => $device->status];
     }
 }
