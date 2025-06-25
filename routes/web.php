@@ -10,6 +10,7 @@ $router->group(['prefix' => 'admin'], function () use ($router) {
 
     $router->group(['middleware' => ['auth-admin']], function () use ($router) {
         $router->get('/room', 'Admin\RoomController@show');
+        $router->patch('/room', 'Admin\RoomController@update');
 
         $router->get('/sync', 'Admin\SyncController@index');
     });

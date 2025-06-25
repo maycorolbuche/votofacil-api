@@ -56,7 +56,18 @@ class RoomController extends Controller
 
     public function update(Request $request, Room $room)
     {
-        //
+        $room = Room::find(request()->input('auth')['room_id']);
+
+        $data = $request->only(['name']);
+        foreach ($data as $key => $value) {
+            $room->$key = $value;
+        }
+
+        if ($room->save()) {
+            return response()->json($room, 200);
+        } else {
+            return response()->json(['error' => 'Não foi possível atualizar a sala.'], 500);
+        }
     }
 
     public function destroy(Room $room)
