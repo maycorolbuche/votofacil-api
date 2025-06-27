@@ -82,7 +82,7 @@ class JWT
             return false;
         }
 
-        $data = self::verify($tokens["admin"]);
+        $data = self::verify($tokens["admin"] ?? '');
         if (!isset($data['type']) || $data['type'] != 'admin') {
             return false;
         }
@@ -97,7 +97,7 @@ class JWT
             return false;
         }
 
-        $data = self::verify($tokens["user"]);
+        $data = self::verify($tokens["user"] ?? '');
         if (!isset($data['type']) || $data['type'] != 'user') {
             return false;
         }

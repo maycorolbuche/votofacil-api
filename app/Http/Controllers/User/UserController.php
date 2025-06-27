@@ -10,7 +10,7 @@ class UserController extends Controller
 {
     public function store(Request $request)
     {
-        $name = trim($request->name);
+        $name = trim($request->name ?? '');
 
         if ($name == '') {
             return response()->json(['error' => 'Nome não informado!'], 500);

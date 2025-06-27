@@ -10,7 +10,7 @@ class SyncController extends Controller
 {
     public function index(Request $request)
     {
-        $auth = request()->input('auth');
+        $auth = $request->input('auth');
 
         $data = [];
 

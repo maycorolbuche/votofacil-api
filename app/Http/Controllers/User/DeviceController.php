@@ -51,9 +51,9 @@ class DeviceController extends Controller
         return $device;
     }
 
-    public function show()
+    public function show(Request $request)
     {
-        return request()->input('auth');
+        return $request->input('auth');
     }
 
     public function edit(Room $room)
@@ -66,15 +66,15 @@ class DeviceController extends Controller
         //
     }
 
-    public function destroy(Room $room)
+    public function destroy(Request $request)
     {
-        $authToken = JWT::isUser();
+        $auth = $request->input('auth');
 
-        if (!$authToken) {
+        if (!$auth) {
             return response()->json(['error' => 'Token inválido!'], 500);
         }
 
-        $device = Device::where('id', $authToken['device_id'])->delete();
+        $device = Device::where('id', $auth['device_id'])->delete();
 
         return $device;
     }

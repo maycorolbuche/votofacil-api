@@ -12,6 +12,10 @@ $router->group(['prefix' => 'admin'], function () use ($router) {
         $router->get('/room', 'Admin\RoomController@show');
         $router->patch('/room', 'Admin\RoomController@update');
 
+        $router->post('/candidate', 'Admin\CandidateController@store');
+        $router->patch('/candidate', 'Admin\CandidateController@update');
+        $router->delete('/candidate', 'Admin\CandidateController@destroy');
+
         $router->get('/sync', 'Admin\SyncController@index');
     });
 });

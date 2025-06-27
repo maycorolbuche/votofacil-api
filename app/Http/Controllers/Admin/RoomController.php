@@ -49,14 +49,14 @@ class RoomController extends Controller
         return $room;
     }
 
-    public function show()
+    public function show(Request $request)
     {
-        return request()->input('auth');
+        return $request->input('auth');
     }
 
     public function update(Request $request, Room $room)
     {
-        $room = Room::find(request()->input('auth')['room_id']);
+        $room = Room::find($request->input('auth')['room_id']);
 
         $data = $request->only(['name']);
         foreach ($data as $key => $value) {

@@ -10,14 +10,18 @@ class SyncController extends Controller
 {
     public function index(Request $request)
     {
-        $auth = request()->input('auth');
+        $auth = $request->input('auth');
+
+        $room_id = $auth['room_id'];
 
         $data = [];
 
-        $data = $auth;
-
-        $room = Room::firstWhere('id', $auth['room_id']);
+        $room = Room::select('id', 'code', 'uuid', 'name')
+            ->with(['candidates:id,sequence,name,room_id'])
+            ->where('id', $room_id)
+            ->first();
         $data['room'] = $room;
+
 
         return $data;
     }
