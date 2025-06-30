@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Candidate;
+use App\Helpers\BallotBox;
 use Illuminate\Http\Request;
 
 class CandidateController extends Controller
@@ -16,7 +17,7 @@ class CandidateController extends Controller
         $name = trim($request->name ?? '');
 
         if ($name == '') {
-            return response()->json(['error' => 'Nome da pessoa não informado!'], 500);
+            return response()->json(['error' => 'Nome do(a) candidato(a) não informado!'], 500);
         }
 
         $sequence = Candidate::where('room_id', $room_id)->max('sequence') + 1;
@@ -38,6 +39,8 @@ class CandidateController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
 
+        BallotBox::calculatePositions();
+
         return $candidate;
     }
 
@@ -45,14 +48,14 @@ class CandidateController extends Controller
     {
         $room_id = $request->input('auth')['room_id'];
 
-        $data = $request->only(['id', 'name']);
+        $data = $request->only(['id', 'name', 'admin_votes']);
 
         if (!isset($data['id'])) {
             return response()->json(['error' => 'ID não informado.'], 500);
         }
         if (isset($data['name'])) {
             if ($data['name'] == '') {
-                return response()->json(['error' => 'Nome da pessoa não informado!'], 500);
+                return response()->json(['error' => 'Nome do(a) candidato(a) não informado!'], 500);
             }
 
             $candidate = Candidate::where('room_id', $room_id)
@@ -60,7 +63,7 @@ class CandidateController extends Controller
                 ->whereNot('id', $data['id'])
                 ->first();
             if ($candidate) {
-                return response()->json(['error' => 'Já existe uma pessoa com o nome "' . $data['name'] . '"!'], 500);
+                return response()->json(['error' => 'Já existe um(a) candidato(a) com o nome "' . $data['name'] . '"!'], 500);
             }
         }
 
@@ -71,6 +74,7 @@ class CandidateController extends Controller
         }
 
         if ($candidate->save()) {
+            BallotBox::sum($candidate->id);
             return response()->json($candidate, 200);
         } else {
             return response()->json(['error' => 'Não foi possível atualizar os dados.'], 500);
@@ -85,8 +89,14 @@ class CandidateController extends Controller
         if (!$auth) {
             return response()->json(['error' => 'Token inválido!'], 500);
         }
+        if (!$request->has('id')) {
+            $candidate = Candidate::where('room_id', $auth['room_id'])
+                ->delete();
+
+            return $candidate;
+        }
         if (!$id) {
-            return response()->json(['error' => 'Código da pessoa não informado!'], 500);
+            return response()->json(['error' => 'Código do(a) candidato(a) não informado!'], 500);
         }
 
         $candidate = Candidate::where('room_id', $auth['room_id'])

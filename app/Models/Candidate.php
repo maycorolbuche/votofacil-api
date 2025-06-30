@@ -8,7 +8,11 @@ class Candidate extends Model
 {
     protected $fillable = [
         'room_id',
+        'position',
         'sequence',
-        'name'
+        'name',
+        'admin_votes',
+        'user_votes',
+        'total_votes',
     ];
 }
