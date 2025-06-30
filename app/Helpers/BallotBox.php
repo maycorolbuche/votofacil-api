@@ -18,19 +18,14 @@ class BallotBox
     public static function calculatePositions()
     {
         $candidates = Candidate::orderByDesc('total_votes')->get();
-        $position = 1;
+        $position = 0;
         $lastVotes = null;
-        $samePosition = 1;
 
         foreach ($candidates as $index => $candidate) {
-            if ($lastVotes !== null && $candidate->total_votes === $lastVotes) {
-                $candidate->position = $position - 1;
-                $samePosition++;
-            } else {
-                $candidate->position = $position;
-                $position += $samePosition;
-                $samePosition = 1;
+            if ($candidate->total_votes !== $lastVotes) {
+                $position++;
             }
+            $candidate->position = $position;
             $lastVotes = $candidate->total_votes;
             $candidate->save();
         }
