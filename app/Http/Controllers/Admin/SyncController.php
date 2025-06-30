@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Helpers\Configs;
 use App\Models\Room;
 use Illuminate\Http\Request;
 
@@ -21,6 +22,7 @@ class SyncController extends Controller
             ->where('id', $room_id)
             ->first();
         $data['room'] = $room;
+        $data['configs'] = Configs::all($room_id);
 
 
         return $data;

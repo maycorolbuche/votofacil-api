@@ -5,12 +5,13 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Helpers\Code;
 use App\Helpers\JWT;
+use App\Helpers\Configs;
 use App\Models\Room;
 use Illuminate\Http\Request;
 
 class RoomController extends Controller
 {
-    public function store(Request $request)
+    public function store()
     {
         $err = true;
         $err_description = '';
@@ -33,6 +34,8 @@ class RoomController extends Controller
         if ($err) {
             return response()->json(['error' => 'Não foi possível criar uma sala - ' . $err_description], 500);
         }
+
+        Configs::register($room->id);
 
         $token = JWT::sign([
             'type' => 'admin',
