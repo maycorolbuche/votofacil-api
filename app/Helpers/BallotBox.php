@@ -10,7 +10,11 @@ class BallotBox
     {
         $candidate = Candidate::where('id', $id_candidate)->first();
         if ($candidate) {
-            $candidate->total_votes = $candidate->admin_votes + $candidate->user_votes;
+            $admin_votes = (int)$candidate->admin_votes ?? 0;
+            $user_votes = (int)$candidate->user_votes ?? 0;
+            $candidate->admin_votes = $admin_votes;
+            $candidate->user_votes = $user_votes;
+            $candidate->total_votes = $admin_votes + $user_votes;
             $candidate->save();
         }
         self::calculatePositions();

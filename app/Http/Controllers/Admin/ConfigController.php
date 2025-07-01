@@ -27,11 +27,7 @@ class ConfigController extends Controller
         }
         $config_item = $configs[$key];
 
-        if ($config_item['type'] == "boolean") {
-            $value = (bool)$value;
-        } elseif ($config_item['type'] == "integer") {
-            $value = (int)$value;
-        }
+        $value = Configs::convert($config_item['type'], $value);
 
         try {
             $config = Config::updateOrCreate(

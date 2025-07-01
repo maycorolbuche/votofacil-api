@@ -22,7 +22,7 @@ class SyncController extends Controller
             ->where('id', $room_id)
             ->first();
         $data['room'] = $room;
-        $data['configs'] = Configs::all($room_id);
+        $data['configs'] = Configs::all();
 
 
         return $data;

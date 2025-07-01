@@ -6,6 +6,12 @@ use App\Models\Config;
 
 class Configs
 {
+    public static function room_id()
+    {
+        $auth = request()->input('auth');
+        $room_id = $auth['room_id'];
+        return $room_id;
+    }
     public static function configs()
     {
         return [
@@ -55,6 +61,15 @@ class Configs
             ]
         ];
     }
+    public static function convert($type, $value)
+    {
+        if ($type == "boolean") {
+            $value = (bool)$value;
+        } elseif ($type == "integer") {
+            $value = (int)$value;
+        }
+        return $value;
+    }
     public static function list()
     {
         $list = [];
@@ -67,8 +82,10 @@ class Configs
         }
         return $list;
     }
-    public static function register($room_id)
+    public static function register()
     {
+        $room_id = self::room_id();
+
         $configs = self::configs();
         foreach ($configs as $groupKey => $config) {
             foreach ($config['items'] as $itemKey => $item) {
@@ -80,11 +97,13 @@ class Configs
             }
         }
     }
-    public static function all($room_id)
+    public static function all()
     {
+        $room_id = self::room_id();
+
         $values = Config::where('room_id', $room_id)->get()->keyBy('key');
         if ($values->isEmpty()) {
-            self::register($room_id);
+            self::register();
             $values = Config::where('room_id', $room_id)->get()->keyBy('key');
         }
         $configs = self::configs();
@@ -92,15 +111,33 @@ class Configs
             foreach ($config['items'] as $itemKey => $item) {
                 $key = "$groupKey.$itemKey";
                 $value = $values[$key]->value ?? $item['default'];
-                if ($item['type'] == 'boolean') {
-                    $value = (bool)$value;
-                } elseif ($item['type'] == 'integer') {
-                    $value = (int)$value;
-                }
+                $value = self::convert($item['type'], $value);
                 $configs[$groupKey]['items'][$itemKey]['value'] = $value;
             }
         }
 
         return $configs;
+    }
+    public static function get($key)
+    {
+        $room_id = self::room_id();
+
+        $data = Config::where('room_id', $room_id)->where('key', $key)->first();
+        if (!$data) {
+            self::register();
+            $data = Config::where('room_id', $room_id)->where('key', $key)->first();
+        }
+
+        $configs = Configs::list();
+        if (!isset($configs[$key])) {
+            return response()->json(['error' => 'Chave "' . $key . '" não existe!'], 500);
+        }
+
+        $value = $data->value;
+
+        $config_item = $configs[$key];
+        $value = self::convert($config_item['type'], $value);
+
+        return $value;
     }
 }
