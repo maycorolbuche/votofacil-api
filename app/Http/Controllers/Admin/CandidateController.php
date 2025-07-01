@@ -19,6 +19,10 @@ class CandidateController extends Controller
         if (is_array($name)) {
             $inserted = [];
             foreach ($name as $n) {
+                if (count($inserted) >= 100) {
+                    break;
+                }
+
                 $n = trim($n);
                 if (mb_strlen($n) > 50) {
                     $n = mb_substr($n, 0, 50);
