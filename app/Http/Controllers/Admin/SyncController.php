@@ -28,7 +28,11 @@ class SyncController extends Controller
         $votes_count = Candidate::where('room_id', $room_id)
             ->selectRaw('SUM(admin_votes) as admin_votes, SUM(user_votes) as user_votes, SUM(total_votes) as total_votes')
             ->first();
-        $data['resume'] = $votes_count;
+        $data['resume'] = [
+            'admin_votes' => $votes_count->admin_votes ?? 0,
+            'user_votes' => $votes_count->user_votes ?? 0,
+            'total_votes' => $votes_count->total_votes ?? 0,
+        ];
 
         return $data;
     }
