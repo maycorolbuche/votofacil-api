@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Helpers\Configs;
 use App\Models\Room;
+use App\Models\Candidate;
 use Illuminate\Http\Request;
 
 class SyncController extends Controller
@@ -24,6 +25,10 @@ class SyncController extends Controller
         $data['room'] = $room;
         $data['configs'] = Configs::all();
 
+        $votes_count = Candidate::where('room_id', $room_id)
+            ->selectRaw('SUM(admin_votes) as admin_votes, SUM(user_votes) as user_votes, SUM(total_votes) as total_votes')
+            ->first();
+        $data['resume'] = $votes_count;
 
         return $data;
     }
