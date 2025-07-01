@@ -82,9 +82,11 @@ class Configs
         }
         return $list;
     }
-    public static function register()
+    public static function register($room_id = null)
     {
-        $room_id = self::room_id();
+        if (is_null($room_id)) {
+            $room_id = self::room_id();
+        }
 
         $configs = self::configs();
         foreach ($configs as $groupKey => $config) {

@@ -35,7 +35,7 @@ class RoomController extends Controller
             return response()->json(['error' => 'Não foi possível criar uma sala - ' . $err_description], 500);
         }
 
-        Configs::register();
+        Configs::register($room->id);
 
         $token = JWT::sign([
             'type' => 'admin',
