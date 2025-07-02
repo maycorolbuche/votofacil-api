@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Helpers\Configs;
+use App\Helpers\Cache;
 use App\Models\Room;
 use App\Models\Candidate;
 use Illuminate\Http\Request;
@@ -13,10 +14,13 @@ class SyncController extends Controller
     public function index(Request $request)
     {
         $auth = $request->input('auth');
-
         $room_id = $auth['room_id'];
 
-        $data = [];
+        $data = Cache::get('room_' . $room_id, []);
+        if (!empty($data)) {
+            $data["cache"] = true;
+            return $data;
+        }
 
         $room = Room::select('id', 'code', 'uuid', 'name')
             ->with(['candidates:id,sequence,position,name,admin_votes,user_votes,total_votes,room_id'])
@@ -34,6 +38,7 @@ class SyncController extends Controller
             'total_votes' => $votes_count->total_votes ?? 0,
         ];
 
+        Cache::set('room_' . $room_id, $data);
         return $data;
     }
 }

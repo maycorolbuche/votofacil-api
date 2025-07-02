@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Candidate;
 use App\Helpers\BallotBox;
 use App\Helpers\Configs;
+use App\Helpers\Cache;
 use Illuminate\Http\Request;
 
 class CandidateController extends Controller
@@ -13,9 +14,10 @@ class CandidateController extends Controller
     public function store(Request $request)
     {
         $auth = $request->input('auth');
-
         $room_id =  $auth['room_id'];
+
         $name = $request->name ?? '';
+
         if (is_array($name)) {
             $inserted = [];
             foreach ($name as $n) {
@@ -46,6 +48,7 @@ class CandidateController extends Controller
                     $candidate->admin_votes = $initial_votes;
                     $candidate->sequence = $sequence;
                     $candidate->save();
+                    Cache::forget('room_' . $room_id);
                     BallotBox::sum($candidate->id);
                     $inserted[] = $candidate;
                 } catch (\Exception $e) {
@@ -105,6 +108,7 @@ class CandidateController extends Controller
             $candidate->admin_votes = $initial_votes;
             $candidate->sequence = $sequence;
             $candidate->save();
+            Cache::forget('room_' . $room_id);
             BallotBox::sum($candidate->id);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
@@ -117,7 +121,8 @@ class CandidateController extends Controller
 
     public function update(Request $request, Candidate $candidate)
     {
-        $room_id = $request->input('auth')['room_id'];
+        $auth = $request->input('auth');
+        $room_id =  $auth['room_id'];
 
         $data = $request->only(['id', 'name', 'admin_votes']);
 
@@ -145,6 +150,7 @@ class CandidateController extends Controller
         }
 
         if ($candidate->save()) {
+            Cache::forget('room_' . $room_id);
             BallotBox::sum($candidate->id);
             return response()->json($candidate, 200);
         } else {
@@ -155,14 +161,14 @@ class CandidateController extends Controller
     public function destroy(Request $request)
     {
         $auth = $request->input('auth');
+        $room_id =  $auth['room_id'];
+
         $id = $request->input('id') ?? "";
 
-        if (!$auth) {
-            return response()->json(['error' => 'Token inválido!'], 500);
-        }
         if (!$request->has('id')) {
-            $candidate = Candidate::where('room_id', $auth['room_id'])
+            $candidate = Candidate::where('room_id', $room_id)
                 ->delete();
+            Cache::forget('room_' . $room_id);
 
             return $candidate;
         }
@@ -170,9 +176,10 @@ class CandidateController extends Controller
             return response()->json(['error' => 'Código do(a) candidato(a) não informado!'], 500);
         }
 
-        $candidate = Candidate::where('room_id', $auth['room_id'])
+        $candidate = Candidate::where('room_id', $room_id)
             ->where('id', $id)
             ->delete();
+        Cache::forget('room_' . $room_id);
 
         return $candidate;
     }

@@ -6,3 +6,7 @@ Homestead.yaml
 .phpunit.result.cache
 
 *.sqlite
+
+*.cache
+.cache/
+.cache
