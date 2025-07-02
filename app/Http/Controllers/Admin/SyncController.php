@@ -22,7 +22,7 @@ class SyncController extends Controller
             return $data;
         }
 
-        $room = Room::select('id', 'code', 'uuid', 'name')
+        $room = Room::select('id', 'code', 'is_active', 'uuid', 'name')
             ->with(['candidates:id,sequence,position,name,admin_votes,user_votes,total_votes,room_id'])
             ->where('id', $room_id)
             ->first();

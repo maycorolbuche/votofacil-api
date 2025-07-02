@@ -3,6 +3,7 @@
 namespace App\Helpers;
 
 use App\Helpers\JWT;
+use App\Helpers\Cache;
 use App\Models\Room;
 use App\Models\Device;
 
@@ -10,6 +11,14 @@ class CheckStatus
 {
     public static function checkRoom($id)
     {
+        $data = Cache::get('room_' . $id, []);
+        if (!empty($data)) {
+            $room = new Room();
+            $room->id = $data['room']['id'];
+            $room->code = $data['room']['code'];
+            $room->is_active = $data['room']['is_active'];
+            return $room;
+        }
         $room = Room::select(['id', 'code', 'is_active'])->firstWhere('id', $id);
 
         if (!$room) {
