@@ -78,6 +78,7 @@ class CandidateController extends Controller
             if ($candidate) {
                 $candidate->increment('admin_votes');
                 BallotBox::sum($candidate->id);
+                Cache::forget('room_' . $room_id);
                 return $candidate;
             } else {
                 return response()->json(['error' => 'Não é encontrado candidato(a) de número ' . $name . '!'], 500);
@@ -92,6 +93,7 @@ class CandidateController extends Controller
             if ($repeated_names == "vote") {
                 $candidate->increment('admin_votes');
                 BallotBox::sum($candidate->id);
+                Cache::forget('room_' . $room_id);
                 return $candidate;
             } else {
                 return response()->json(['error' => 'Pessoa "' . $name . '" já foi cadastrada!'], 500);
