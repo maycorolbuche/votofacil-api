@@ -7,6 +7,7 @@ use App\Helpers\Configs;
 use App\Helpers\Cache;
 use App\Models\Room;
 use App\Models\Candidate;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
 class SyncController extends Controller
@@ -29,13 +30,21 @@ class SyncController extends Controller
         $data['room'] = $room;
         $data['configs'] = Configs::all();
 
-        $votes_count = Candidate::where('room_id', $room_id)
-            ->selectRaw('SUM(admin_votes) as admin_votes, SUM(user_votes) as user_votes, SUM(total_votes) as total_votes')
+        $votes_count = Candidate::query()
+            ->select([
+                DB::raw('SUM(admin_votes) as admin_votes'),
+                DB::raw('SUM(user_votes) as user_votes'),
+                DB::raw('SUM(total_votes) as total_votes'),
+                DB::raw('COUNT(0) as total_candidates'),
+            ])
+            ->where('room_id', $room_id)
             ->first();
+
         $data['resume'] = [
             'admin_votes' => $votes_count->admin_votes ?? 0,
             'user_votes' => $votes_count->user_votes ?? 0,
             'total_votes' => $votes_count->total_votes ?? 0,
+            'total_candidates' => $votes_count->total_candidates ?? 0,
         ];
 
         Cache::set('room_' . $room_id, $data);
