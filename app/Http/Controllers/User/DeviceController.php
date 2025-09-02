@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Helpers\JWT;
 use App\Models\Device;
 use App\Models\Room;
+use App\Helpers\Cache;
 use Illuminate\Http\Request;
 
 class DeviceController extends Controller
@@ -31,6 +32,7 @@ class DeviceController extends Controller
             $device = new Device;
             $device->room_id = $room->id;
             $device->save();
+            Cache::forget('room_' . $room->room_id);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Não foi possível entrar na sala - ' . $e->getMessage()], 500);
         }

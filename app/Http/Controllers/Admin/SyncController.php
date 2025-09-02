@@ -25,6 +25,10 @@ class SyncController extends Controller
 
         $room = Room::select('id', 'code', 'is_active', 'uuid', 'name')
             ->with(['candidates:id,sequence,position,name,admin_votes,user_votes,total_votes,room_id'])
+            ->with([
+                'devices:id,room_id,status',
+                'devices.users:id,device_id,name,is_primary'
+            ])
             ->where('id', $room_id)
             ->first();
         $data['room'] = $room;

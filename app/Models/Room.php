@@ -17,4 +17,9 @@ class Room extends Model
     {
         return $this->hasMany(Candidate::class);
     }
+
+    public function devices()
+    {
+        return $this->hasMany(Device::class);
+    }
 }
