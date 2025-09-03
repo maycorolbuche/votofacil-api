@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Helpers\Configs;
-use App\Helpers\Cache;
 use App\Models\Config;
 use Illuminate\Http\Request;
 
@@ -35,7 +34,6 @@ class ConfigController extends Controller
                 ['room_id' => $room_id, 'key' => $key],
                 ['value' => $value]
             );
-            Cache::forget('room_' . $room_id);
 
             return response()->json($config, 200);
         } catch (\Exception $e) {

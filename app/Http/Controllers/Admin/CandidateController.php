@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\Candidate;
 use App\Helpers\BallotBox;
 use App\Helpers\Configs;
-use App\Helpers\Cache;
 use Illuminate\Http\Request;
 
 class CandidateController extends Controller
@@ -48,7 +47,6 @@ class CandidateController extends Controller
                     $candidate->admin_votes = $initial_votes;
                     $candidate->sequence = $sequence;
                     $candidate->save();
-                    Cache::forget('room_' . $room_id);
                     BallotBox::sum($candidate->id);
                     $inserted[] = $candidate;
                 } catch (\Exception $e) {
@@ -78,7 +76,6 @@ class CandidateController extends Controller
             if ($candidate) {
                 $candidate->increment('admin_votes');
                 BallotBox::sum($candidate->id);
-                Cache::forget('room_' . $room_id);
                 return $candidate;
             } else {
                 return response()->json(['error' => 'Não é encontrado candidato(a) de número ' . $name . '!'], 500);
@@ -93,7 +90,6 @@ class CandidateController extends Controller
             if ($repeated_names == "vote") {
                 $candidate->increment('admin_votes');
                 BallotBox::sum($candidate->id);
-                Cache::forget('room_' . $room_id);
                 return $candidate;
             } else {
                 return response()->json(['error' => 'Pessoa "' . $name . '" já foi cadastrada!'], 500);
@@ -110,7 +106,6 @@ class CandidateController extends Controller
             $candidate->admin_votes = $initial_votes;
             $candidate->sequence = $sequence;
             $candidate->save();
-            Cache::forget('room_' . $room_id);
             BallotBox::sum($candidate->id);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
@@ -152,7 +147,6 @@ class CandidateController extends Controller
         }
 
         if ($candidate->save()) {
-            Cache::forget('room_' . $room_id);
             BallotBox::sum($candidate->id);
             return response()->json($candidate, 200);
         } else {
@@ -168,11 +162,13 @@ class CandidateController extends Controller
         $id = $request->input('id') ?? "";
 
         if (!$request->has('id')) {
-            $candidate = Candidate::where('room_id', $room_id)
-                ->delete();
-            Cache::forget('room_' . $room_id);
+            $candidates = Candidate::where('room_id', $room_id)
+                ->get();
+            foreach ($candidates as $candidate) {
+                $candidate->delete();
+            }
 
-            return $candidate;
+            return $candidates;
         }
         if (!$id) {
             return response()->json(['error' => 'Código do(a) candidato(a) não informado!'], 500);
@@ -180,8 +176,10 @@ class CandidateController extends Controller
 
         $candidate = Candidate::where('room_id', $room_id)
             ->where('id', $id)
-            ->delete();
-        Cache::forget('room_' . $room_id);
+            ->first();
+        if ($candidate) {
+            $candidate->delete();
+        }
 
         return $candidate;
     }

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Helpers\Cache;
 
 class Device extends Model
 {
@@ -10,6 +11,18 @@ class Device extends Model
         'room_id',
         'status',
     ];
+
+    protected static function booted()
+    {
+        $clearCache = function ($device) {
+            $room_id = $device->room_id;
+            Cache::forget('room_' . $room_id);
+        };
+
+        static::created($clearCache);
+        static::updated($clearCache);
+        static::deleted($clearCache);
+    }
 
     public function room()
     {

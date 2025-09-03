@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Helpers\Code;
 use App\Helpers\JWT;
 use App\Helpers\Configs;
-use App\Helpers\Cache;
 use App\Models\Room;
 use Illuminate\Http\Request;
 
@@ -44,8 +43,6 @@ class RoomController extends Controller
             'code' => $room->code,
         ]);
 
-        Cache::forget('room_' . $room->id);
-
         if ($token == "") {
             return response()->json(['error' => 'Não foi possível criar token!'], 500);
         }
@@ -73,7 +70,6 @@ class RoomController extends Controller
         }
 
         if ($room->save()) {
-            Cache::forget('room_' . $room_id);
             return response()->json($room, 200);
         } else {
             return response()->json(['error' => 'Não foi possível atualizar a sala.'], 500);

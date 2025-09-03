@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Helpers\Cache;
 
 class User extends Model
 {
@@ -12,4 +13,16 @@ class User extends Model
         'is_primary',
         'name',
     ];
+
+    protected static function booted()
+    {
+        $clearCache = function ($user) {
+            $room_id = $user->room_id;
+            Cache::forget('room_' . $room_id);
+        };
+
+        static::created($clearCache);
+        static::updated($clearCache);
+        static::deleted($clearCache);
+    }
 }
