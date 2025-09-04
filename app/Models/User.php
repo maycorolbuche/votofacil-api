@@ -25,4 +25,9 @@ class User extends Model
         static::updated($clearCache);
         static::deleted($clearCache);
     }
+
+    public function device()
+    {
+        return $this->belongsTo(Device::class);
+    }
 }

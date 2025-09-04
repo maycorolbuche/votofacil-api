@@ -7,6 +7,7 @@ use App\Helpers\Configs;
 use App\Helpers\Cache;
 use App\Models\Room;
 use App\Models\Candidate;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
@@ -44,11 +45,52 @@ class SyncController extends Controller
             ->where('room_id', $room_id)
             ->first();
 
+        $users_count = User::query()
+            ->select([
+                DB::raw('COUNT(0) as total_users'),
+            ])
+            ->where('room_id', $room_id)
+            ->first();
+
+        $users_approved_count = User::query()
+            ->select([
+                DB::raw('COUNT(0) as total_approved_users'),
+            ])
+            ->where('room_id', $room_id)
+            ->whereHas('device', function ($query) {
+                $query->where('status', 'approved');
+            })
+            ->first();
+
+        $users_pending_count = User::query()
+            ->select([
+                DB::raw('COUNT(0) as total_pending_users'),
+            ])
+            ->where('room_id', $room_id)
+            ->whereHas('device', function ($query) {
+                $query->where('status', 'pending');
+            })
+            ->first();
+
+        $users_disapproved_count = User::query()
+            ->select([
+                DB::raw('COUNT(0) as total_disapproved_users'),
+            ])
+            ->where('room_id', $room_id)
+            ->whereHas('device', function ($query) {
+                $query->where('status', 'disapproved');
+            })
+            ->first();
+
         $data['resume'] = [
             'admin_votes' => $votes_count->admin_votes ?? 0,
             'user_votes' => $votes_count->user_votes ?? 0,
             'total_votes' => $votes_count->total_votes ?? 0,
             'total_candidates' => $votes_count->total_candidates ?? 0,
+            'total_approved_users' => $users_approved_count->total_approved_users ?? 0,
+            'total_pending_users' => $users_pending_count->total_pending_users ?? 0,
+            'total_disapproved_users' => $users_disapproved_count->total_disapproved_users ?? 0,
+            'total_users' => $users_count->total_users ?? 0,
         ];
 
         Cache::set('room_' . $room_id, $data);
