@@ -56,16 +56,6 @@ class DeviceController extends Controller
         return $request->input('auth');
     }
 
-    public function edit(Room $room)
-    {
-        //
-    }
-
-    public function update(Request $request, Room $room)
-    {
-        //
-    }
-
     public function destroy(Request $request)
     {
         $auth = $request->input('auth');
