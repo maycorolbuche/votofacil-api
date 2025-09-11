@@ -30,6 +30,17 @@ class DeviceController extends Controller
             unset($data['user_id']);
         }
 
+        if (isset($data['status']) && $data['status'] == "disapproved") {
+            $users = User::where('room_id', $room_id)->where('device_id', $data['id'])->where('is_primary', false)->pluck("name");
+            if ($users->count() > 0) {
+                $names = implode(" / ", $users->toArray());
+                if (strlen($names) > 100) {
+                    $names = substr($names, 0, 100) . '...';
+                }
+                return response()->json(['error' => 'Antes de negar este dispositivo, remova os usuários vinculados primeiro! (' . $names . ')'], 500);
+            }
+        }
+
         $device = Device::where('room_id', $room_id)->where('id', $data['id'])->first();
         foreach ($data as $key => $value) {
             $device->$key = $value;
@@ -40,35 +51,5 @@ class DeviceController extends Controller
         } else {
             return response()->json(['error' => 'Não foi possível atualizar os dados.'], 500);
         }
-    }
-
-    public function destroy(Request $request)
-    {
-        /*   $auth = $request->input('auth');
-        $room_id =  $auth['room_id'];
-
-        $id = $request->input('id') ?? "";
-
-        if (!$request->has('id')) {
-            $devices = Device::where('room_id', $room_id)
-                ->get();
-            foreach ($devices as $device) {
-                $device->delete();
-            }
-
-            return $devices;
-        }
-        if (!$id) {
-            return response()->json(['error' => 'Código do(a) candidato(a) não informado!'], 500);
-        }
-
-        $device = Device::where('room_id', $room_id)
-            ->where('id', $id)
-            ->first();
-        if ($device) {
-            $device->delete();
-        }
-
-        return $device;*/
     }
 }

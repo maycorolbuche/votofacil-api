@@ -18,6 +18,10 @@ $router->group(['prefix' => 'admin'], function () use ($router) {
 
         $router->patch('/device', 'Admin\DeviceController@update');
 
+        $router->post('/user', 'User\UserController@store');
+        $router->patch('/user', 'Admin\UserController@update');
+        $router->delete('/user', 'Admin\UserController@destroy');
+
         $router->post('/config', 'Admin\ConfigController@store');
 
         $router->get('/sync', 'Admin\SyncController@index');
