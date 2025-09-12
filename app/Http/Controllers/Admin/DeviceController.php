@@ -30,17 +30,6 @@ class DeviceController extends Controller
             unset($data['user_id']);
         }
 
-        if (isset($data['status']) && $data['status'] == "disapproved") {
-            $users = User::where('room_id', $room_id)->where('device_id', $data['id'])->where('is_primary', false)->pluck("name");
-            if ($users->count() > 0) {
-                $names = implode(" / ", $users->toArray());
-                if (strlen($names) > 100) {
-                    $names = substr($names, 0, 100) . '...';
-                }
-                return response()->json(['error' => 'Antes de negar este dispositivo, remova os usuários vinculados primeiro! (' . $names . ')'], 500);
-            }
-        }
-
         $device = Device::where('room_id', $room_id)->where('id', $data['id'])->first();
         foreach ($data as $key => $value) {
             $device->$key = $value;
