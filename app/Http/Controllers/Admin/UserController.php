@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Device;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -10,17 +11,23 @@ class UserController extends Controller
 {
     public function store(Request $request)
     {
-        /*
-                $auth = $request->input('auth');
+        $auth = $request->input('auth');
         $room_id =  $auth['room_id'];
 
-        
         $name = trim($request->name ?? '');
-        $room_id = $request->input('auth')['room_id'];
-        $device_id = $request->input('auth')['device_id'];
+        $device_id = $request->device_id ?? '';
 
         if ($name == '') {
             return response()->json(['error' => 'Nome não informado!'], 500);
+        }
+
+        if ($device_id == '') {
+            return response()->json(['error' => 'Dispositivo não informado!'], 500);
+        }
+
+        $device = Device::where('room_id', $room_id)->where('id', $device_id)->first();
+        if (!$device) {
+            return response()->json(['error' => 'Dispositivo não encontrado!'], 500);
         }
 
         try {
@@ -28,13 +35,13 @@ class UserController extends Controller
             $user->name = $name;
             $user->room_id = $room_id;
             $user->device_id = $device_id;
-            $user->is_primary = true;
+            $user->is_primary = false;
             $user->save();
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Não foi possível cadastrar seu nome - ' . $e->getMessage()], 500);
+            return response()->json(['error' => $e->getMessage()], 500);
         }
 
-        return $user;*/
+        return $user;
     }
 
     public function update(Request $request, User $user)
@@ -68,31 +75,45 @@ class UserController extends Controller
 
     public function destroy(Request $request)
     {
-        /* $auth = $request->input('auth');
+        $auth = $request->input('auth');
         $room_id =  $auth['room_id'];
+        $remove_device_id = null;
 
         $id = $request->input('id') ?? "";
 
-        if (!$request->has('id')) {
-            $users = User::where('room_id', $room_id)
-                ->get();
-            foreach ($users as $user) {
-                $user->delete();
-            }
-
-            return $users;
-        }
         if (!$id) {
-            return response()->json(['error' => 'Código do(a) candidato(a) não informado!'], 500);
+            return response()->json(['error' => 'Código do(a) usuário(a) não informado!'], 500);
         }
 
         $user = User::where('room_id', $room_id)
             ->where('id', $id)
             ->first();
+
+        if (!$user) {
+            return response()->json(['error' => 'Usuário(a) não encontrado!'], 500);
+        }
+
+        if ($user->is_primary) {
+            User::where('room_id', $room_id)
+                ->where('device_id', $user->device_id)
+                ->whereNot('id', $id)
+                ->delete();
+            $remove_device_id = $user->device_id;
+        }
+
         if ($user) {
             $user->delete();
         }
 
-        return $user;*/
+        if ($remove_device_id) {
+            $device = Device::where('room_id', $room_id)
+                ->where('id', $remove_device_id)
+                ->first();
+            if ($device) {
+                $device->delete();
+            }
+        }
+
+        return $user;
     }
 }

@@ -18,7 +18,7 @@ $router->group(['prefix' => 'admin'], function () use ($router) {
 
         $router->patch('/device', 'Admin\DeviceController@update');
 
-        $router->post('/user', 'User\UserController@store');
+        $router->post('/user', 'Admin\UserController@store');
         $router->patch('/user', 'Admin\UserController@update');
         $router->delete('/user', 'Admin\UserController@destroy');
 
