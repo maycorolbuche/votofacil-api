@@ -7,6 +7,7 @@ use App\Helpers\Configs;
 use App\Helpers\Cache;
 use App\Models\Room;
 use App\Models\Candidate;
+use App\Models\Device;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
@@ -43,6 +44,37 @@ class SyncController extends Controller
                 DB::raw('COUNT(0) as total_candidates'),
             ])
             ->where('room_id', $room_id)
+            ->first();
+
+        $devices_count = Device::query()
+            ->select([
+                DB::raw('COUNT(0) as total_devices'),
+            ])
+            ->where('room_id', $room_id)
+            ->first();
+
+        $devices_approved_count = Device::query()
+            ->select([
+                DB::raw('COUNT(0) as total_approved_devices'),
+            ])
+            ->where('room_id', $room_id)
+            ->where('status', 'approved')
+            ->first();
+
+        $devices_pending_count = Device::query()
+            ->select([
+                DB::raw('COUNT(0) as total_pending_devices'),
+            ])
+            ->where('room_id', $room_id)
+            ->where('status', 'pending')
+            ->first();
+
+        $devices_disapproved_count = Device::query()
+            ->select([
+                DB::raw('COUNT(0) as total_disapproved_devices'),
+            ])
+            ->where('room_id', $room_id)
+            ->where('status', 'disapproved')
             ->first();
 
         $users_count = User::query()
@@ -91,6 +123,10 @@ class SyncController extends Controller
             'total_pending_users' => $users_pending_count->total_pending_users ?? 0,
             'total_disapproved_users' => $users_disapproved_count->total_disapproved_users ?? 0,
             'total_users' => $users_count->total_users ?? 0,
+            'total_approved_devices' => $devices_approved_count->total_approved_devices ?? 0,
+            'total_pending_devices' => $devices_pending_count->total_pending_devices ?? 0,
+            'total_disapproved_devices' => $devices_disapproved_count->total_disapproved_devices ?? 0,
+            'total_devices' => $devices_count->total_devices ?? 0,
         ];
 
         Cache::set('room_' . $room_id, $data);
