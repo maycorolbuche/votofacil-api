@@ -59,12 +59,13 @@ class DeviceController extends Controller
     public function destroy(Request $request)
     {
         $auth = $request->input('auth');
+        $device_id = $auth['device_id'];
 
         if (!$auth) {
             return response()->json(['error' => 'Token inválido!'], 500);
         }
 
-        $device = Device::where('id', $auth['device_id'])->first();
+        $device = Device::where('id', $device_id)->first();
         if ($device) {
             $device->delete();
         }

@@ -19,11 +19,16 @@ class SyncController extends Controller
         $auth = $request->input('auth');
         $room_id = $auth['room_id'];
 
+        $users_last_sync = Cache::get('last_sync_' . $room_id, []);
+
         $data = Cache::get('room_' . $room_id, []);
         if (!empty($data)) {
+            $data["users_last_sync"] = $users_last_sync;
             $data["cache"] = true;
             return $data;
         }
+
+        $data["users_last_sync"] = $users_last_sync;
 
         $room = Room::select('id', 'code', 'is_active', 'uuid', 'name')
             ->with(['candidates:id,sequence,position,name,admin_votes,user_votes,total_votes,room_id'])

@@ -16,7 +16,9 @@ class Device extends Model
     {
         $clearCache = function ($device) {
             $room_id = $device->room_id;
+            $device_id = $device->id;
             Cache::forget('room_' . $room_id);
+            Cache::forget('device_' . $device_id);
         };
 
         static::created($clearCache);

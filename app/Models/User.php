@@ -18,7 +18,9 @@ class User extends Model
     {
         $clearCache = function ($user) {
             $room_id = $user->room_id;
+            $device_id = $user->device_id;
             Cache::forget('room_' . $room_id);
+            Cache::forget('device_' . $device_id);
         };
 
         static::created($clearCache);
