@@ -19,6 +19,9 @@ class Room extends Model
         $clearCache = function ($room) {
             $room_id = $room->id;
             Cache::forget('room_' . $room_id);
+            foreach ($room->devices as $device) {
+                Cache::forget('device_' . $device->id);
+            }
         };
 
         static::created($clearCache);

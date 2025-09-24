@@ -4,6 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Helpers\Cache;
+use App\Models\Room;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
@@ -25,6 +26,9 @@ class SyncController extends Controller
             $data["cache"] = true;
             return $data;
         }
+
+        $room = Room::where('id', $room_id)->first();
+        $data['room_name'] = $room['name'];
 
         $users = User::where('device_id', $device_id)->get();
         if ($users->count() <= 0) {

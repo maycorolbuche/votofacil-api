@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('uuid')->unique()->nullable();
             $table->string('name')->nullable();
             $table->boolean('is_active')->default(true);
+            $table->boolean('status')->default('closed');
             $table->timestamps();
         });
     }
