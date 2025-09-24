@@ -44,18 +44,18 @@ class Configs
                     ],
                 ]
             ],
-            'candidates55' => [
-                'title' => 'Candidatos 45 Eleitores',
+            'votes' => [
+                'title' => 'Votação',
                 'items' => [
-                    'test' => [
-                        'title' => 'Teste 1',
+                    'room_auto_close' => [
+                        'title' => 'Fechar a sala automaticamente após todos votarem?',
                         'type' => 'boolean',
                         'default' => 'true'
                     ],
-                    'test2' => [
-                        'title' => 'Teste 45',
+                    'num_candidates' => [
+                        'title' => 'Qtd. candidatos a serem escolhidos',
                         'type' => 'integer',
-                        'default' => '415'
+                        'default' => 1
                     ],
                 ]
             ]
