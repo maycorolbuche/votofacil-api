@@ -17,6 +17,8 @@ class Candidate extends Model
         'total_votes',
     ];
 
+    protected $appends = ['initials'];
+
     protected static function booted()
     {
         $clearCache = function ($candidate) {
@@ -27,5 +29,16 @@ class Candidate extends Model
         static::created($clearCache);
         static::updated($clearCache);
         static::deleting($clearCache);
+    }
+
+    public function getInitialsAttribute()
+    {
+        $words = preg_split('/\s+/', trim($this->name));
+        if (count($words) === 1) {
+            return strtoupper(mb_substr($words[0], 0, 1, 'UTF-8'));
+        }
+        $first = mb_substr($words[0], 0, 1, 'UTF-8');
+        $last = mb_substr($words[count($words) - 1], 0, 1, 'UTF-8');
+        return strtoupper($first . $last);
     }
 }

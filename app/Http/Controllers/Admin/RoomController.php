@@ -8,6 +8,7 @@ use App\Helpers\JWT;
 use App\Helpers\Configs;
 use App\Models\Room;
 use Illuminate\Http\Request;
+use App\Helpers\Cache;
 
 class RoomController extends Controller
 {
@@ -63,6 +64,10 @@ class RoomController extends Controller
         $room_id =  $auth['room_id'];
 
         $room = Room::find($room_id);
+        if (!$room) {
+            Cache::forget('room_' . $room_id);
+            return response()->json(['error' => 'Sala não encontrada!'], 500);
+        }
 
         $data = $request->only(['name']);
         foreach ($data as $key => $value) {
