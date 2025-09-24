@@ -11,6 +11,7 @@ class Room extends Model
         'code',
         'uuid',
         'name',
+        'status',
         'is_active'
     ];
 

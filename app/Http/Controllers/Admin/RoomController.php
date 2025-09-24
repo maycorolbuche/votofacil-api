@@ -69,7 +69,7 @@ class RoomController extends Controller
             return response()->json(['error' => 'Sala não encontrada!'], 500);
         }
 
-        $data = $request->only(['name']);
+        $data = $request->only(['name', 'status']);
         foreach ($data as $key => $value) {
             $room->$key = $value;
         }

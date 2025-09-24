@@ -30,7 +30,7 @@ class SyncController extends Controller
 
         $data["users_last_sync"] = $users_last_sync;
 
-        $room = Room::select('id', 'code', 'is_active', 'uuid', 'name')
+        $room = Room::select('id', 'code', 'is_active', 'status', 'uuid', 'name')
             ->with(['candidates:id,sequence,position,name,admin_votes,user_votes,total_votes,room_id'])
             ->with([
                 'devices:id,room_id,status',
