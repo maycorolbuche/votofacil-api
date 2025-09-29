@@ -35,9 +35,9 @@ class SyncController extends Controller
             $data['status'] = 'no-users';
         } elseif ($auth['status'] != 'approved') {
             $data['status'] = 'pending';
+        }else{
+            $data['status'] = $room['status'];
         }
-
-        $data['status'] = $room['status'];
 
         if ($users->count() > 0) {
             $data['users'] = $users;
