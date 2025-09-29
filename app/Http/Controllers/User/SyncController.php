@@ -44,8 +44,11 @@ class SyncController extends Controller
         }
 
         if ($data['status'] == 'open') {
-            $data['candidates'] = $room->candidates->sortBy('name')->values()->map(function ($candidate) {
+            $data['candidates'] = $room->candidates->sortBy(function ($candidate) {
+                return mb_strtolower($candidate->name);
+            })->values()->map(function ($candidate) {
                 return [
+                    'id' => $candidate->id,
                     'sequence' => $candidate->sequence,
                     'name' => $candidate->name,
                 ];
