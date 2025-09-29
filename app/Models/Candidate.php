@@ -24,6 +24,13 @@ class Candidate extends Model
         $clearCache = function ($candidate) {
             $room_id = $candidate->room_id;
             Cache::forget('room_' . $room_id);
+
+            $room = Room::where('id', $room_id)->first();
+            if ($room["status"] == "open") {
+                foreach ($room->devices as $device) {
+                    Cache::forget('device_' . $device->id);
+                }
+            }
         };
 
         static::created($clearCache);

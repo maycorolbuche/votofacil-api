@@ -37,8 +37,19 @@ class SyncController extends Controller
             $data['status'] = 'pending';
         }
 
+        $data['status'] = $room['status'];
+
         if ($users->count() > 0) {
             $data['users'] = $users;
+        }
+
+        if ($data['status'] == 'open') {
+            $data['candidates'] = $room->candidates->sortBy('name')->values()->map(function ($candidate) {
+                return [
+                    'sequence' => $candidate->sequence,
+                    'name' => $candidate->name,
+                ];
+            });
         }
 
         Cache::set('device_' . $device_id, $data);
