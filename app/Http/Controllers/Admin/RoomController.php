@@ -7,8 +7,9 @@ use App\Helpers\Code;
 use App\Helpers\JWT;
 use App\Helpers\Configs;
 use App\Models\Room;
-use Illuminate\Http\Request;
 use App\Helpers\Cache;
+use App\Helpers\BallotBox;
+use Illuminate\Http\Request;
 
 class RoomController extends Controller
 {
@@ -67,6 +68,10 @@ class RoomController extends Controller
         if (!$room) {
             Cache::forget('room_' . $room_id);
             return response()->json(['error' => 'Sala não encontrada!'], 500);
+        }
+
+        if ($request->input('status', '') == 'closed' && $room->status != 'closed') {
+            BallotBox::poll($room_id);
         }
 
         $data = $request->only(['name', 'status']);

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Candidate;
+use App\Models\Vote;
 use App\Helpers\BallotBox;
 use App\Helpers\Configs;
 use Illuminate\Http\Request;
@@ -54,7 +55,7 @@ class CandidateController extends Controller
                     continue;
                 }
             }
-            BallotBox::calculatePositions();
+            BallotBox::calculatePositions($room_id);
             return response()->json($inserted);
         }
 
@@ -111,7 +112,7 @@ class CandidateController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
 
-        BallotBox::calculatePositions();
+        BallotBox::calculatePositions($room_id);
 
         return $candidate;
     }
@@ -178,8 +179,11 @@ class CandidateController extends Controller
             ->where('id', $id)
             ->first();
         if ($candidate) {
+            Vote::where('candidate_id', $candidate->id)->delete();
             $candidate->delete();
         }
+
+        BallotBox::calculatePositions($room_id);
 
         return $candidate;
     }

@@ -38,6 +38,11 @@ class Candidate extends Model
         static::deleting($clearCache);
     }
 
+    public function votes()
+    {
+        return $this->hasMany(Vote::class);
+    }
+
     public function getInitialsAttribute()
     {
         $words = preg_split('/\s+/', trim($this->name));

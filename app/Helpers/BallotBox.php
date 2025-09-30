@@ -3,6 +3,7 @@
 namespace App\Helpers;
 
 use App\Models\Candidate;
+use App\Models\Vote;
 
 class BallotBox
 {
@@ -17,11 +18,11 @@ class BallotBox
             $candidate->total_votes = $admin_votes + $user_votes;
             $candidate->save();
         }
-        self::calculatePositions();
+        self::calculatePositions($candidate->room_id);
     }
-    public static function calculatePositions()
+    public static function calculatePositions($room_id)
     {
-        $candidates = Candidate::orderByDesc('total_votes')->get();
+        $candidates = Candidate::where('room_id', $room_id)->orderByDesc('total_votes')->get();
         $position = 0;
         $lastVotes = null;
 
@@ -33,5 +34,16 @@ class BallotBox
             $lastVotes = $candidate->total_votes;
             $candidate->save();
         }
+    }
+    public static function poll($room_id)
+    {
+        $candidates = Candidate::where('room_id', $room_id)->withCount('votes')->get();
+        foreach ($candidates as $candidate) {
+            $candidate->user_votes = $candidate->votes_count;
+            $candidate->save();
+
+            self::sum($candidate->id);
+        }
+        self::calculatePositions($room_id);
     }
 }
