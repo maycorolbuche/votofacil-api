@@ -37,6 +37,7 @@ $router->group(['prefix' => 'user'], function () use ($router) {
         $router->delete('/device', 'User\DeviceController@destroy');
 
         $router->post('/user', 'User\UserController@store');
+        $router->post('/vote', 'User\VoteController@store');
 
         $router->get('/sync', 'User\SyncController@index');
     });

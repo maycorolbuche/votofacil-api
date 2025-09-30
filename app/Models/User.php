@@ -32,4 +32,9 @@ class User extends Model
     {
         return $this->belongsTo(Device::class);
     }
+
+    public function votes()
+    {
+        return $this->hasMany(Vote::class);
+    }
 }
