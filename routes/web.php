@@ -23,6 +23,8 @@ $router->group(['prefix' => 'admin'], function () use ($router) {
         $router->patch('/user', 'Admin\UserController@update');
         $router->delete('/user', 'Admin\UserController@destroy');
 
+        $router->delete('/vote', 'Admin\VoteController@destroy');
+
         $router->post('/config', 'Admin\ConfigController@store');
 
         $router->get('/sync', 'Admin\SyncController@index');

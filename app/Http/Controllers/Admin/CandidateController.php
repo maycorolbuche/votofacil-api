@@ -168,8 +168,13 @@ class CandidateController extends Controller
             foreach ($candidates as $candidate) {
                 $candidate->delete();
             }
+            $votes = Vote::where('room_id', $room_id)
+                ->get();
+            foreach ($votes as $vote) {
+                $vote->delete();
+            }
 
-            return $candidates;
+            return $votes;
         }
         if (!$id) {
             return response()->json(['error' => 'Código do(a) candidato(a) não informado!'], 500);
@@ -179,8 +184,14 @@ class CandidateController extends Controller
             ->where('id', $id)
             ->first();
         if ($candidate) {
-            Vote::where('candidate_id', $candidate->id)->delete();
             $candidate->delete();
+        }
+
+        $vote = Vote::where('room_id', $room_id)
+            ->where('candidate_id', $candidate->id)
+            ->first();
+        if ($vote) {
+            $vote->delete();
         }
 
         BallotBox::calculatePositions($room_id);
