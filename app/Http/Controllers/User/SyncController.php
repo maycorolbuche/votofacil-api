@@ -31,7 +31,10 @@ class SyncController extends Controller
         $room = Room::where('id', $room_id)->first();
         $data['room_name'] = $room['name'];
 
-        $users = User::select(['id', 'name', 'is_primary'])->where('device_id', $device_id)->with('votes')->get();
+        $users = User::select(['id', 'name', 'is_primary'])
+            ->where('device_id', $device_id)
+            ->where('room_id', $room_id)
+            ->get();
         if ($users->count() <= 0) {
             $data['status'] = 'no-users';
         } elseif ($auth['status'] != 'approved') {
@@ -41,25 +44,44 @@ class SyncController extends Controller
         }
 
         if ($users->count() > 0) {
-            $data['users'] = $users;
+            $data['users'] = $users->toArray();
         }
 
         if ($data['status'] == 'open') {
-            $user = $users[0];
-            $data['user'] = $user;
-            $data['votes'] = $user->votes->pluck('candidate_id')->toArray();
-            $data['votes_max'] = Configs::get('votes.num_candidates');
+            $votes_max = Configs::get('votes.num_candidates');
 
-            $data['candidates'] = $room->candidates->sortBy(function ($candidate) {
-                return mb_strtolower($candidate->name);
-            })->values()->map(function ($candidate) {
-                return [
-                    'id' => $candidate->id,
-                    'sequence' => $candidate->sequence,
-                    'name' => $candidate->name,
-                ];
-            });
+            $users_pending = User::select(['id', 'name', 'is_primary'])
+                ->withCount('votes')
+                ->where('votes_count', '<', $votes_max)
+                ->where('device_id', $device_id)
+                ->where('room_id', $room_id)
+                ->orderByDesc('is_primary')
+                ->orderBy('id')
+                ->get();
+
+            if ($users_pending->count() <= 0) {
+                $data['status'] = 'no-votes-left';
+            } else {
+                $user = $users_pending[0];
+
+                $data['user'] = $user->toArray();
+                $data['users_pending_count'] = count($users_pending);
+                $data['votes'] = $user->votes->pluck('candidate_id')->toArray();
+                $data['votes_max'] = $votes_max;
+
+                $data['candidates'] = $room->candidates->sortBy(function ($candidate) {
+                    return mb_strtolower($candidate->name);
+                })->values()->map(function ($candidate) {
+                    return [
+                        'id' => $candidate->id,
+                        'sequence' => $candidate->sequence,
+                        'name' => $candidate->name,
+                    ];
+                })->toArray();
+            }
         }
+
+        //dd($data);
 
         Cache::set('device_' . $device_id, $data);
         return $data;
