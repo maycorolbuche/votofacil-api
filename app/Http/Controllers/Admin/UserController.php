@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Device;
 use App\Models\User;
+use App\Models\Vote;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -112,6 +113,13 @@ class UserController extends Controller
             if ($device) {
                 $device->delete();
             }
+        }
+
+        $vote = Vote::where('room_id', $room_id)
+            ->where('user_id', $user->id)
+            ->first();
+        if ($vote) {
+            $vote->delete();
         }
 
         return $user;
