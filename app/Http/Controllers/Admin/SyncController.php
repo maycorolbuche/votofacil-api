@@ -30,6 +30,8 @@ class SyncController extends Controller
 
         $data["users_last_sync"] = $users_last_sync;
 
+        $data["datetime"] = date('Y-m-d H:i:s');
+
         $room = Room::select('id', 'code', 'is_active', 'status', 'uuid', 'name')
             ->with([
                 'candidates' => function ($q) {
@@ -38,7 +40,10 @@ class SyncController extends Controller
                         ->orderBy('sequence');
                 },
                 'devices:id,room_id,status',
-                'devices.users:id,device_id,name,is_primary'
+                'devices.users' => function ($q) {
+                    $q->select('id', 'device_id', 'name', 'is_primary')
+                        ->withCount('votes');
+                }
             ])
             ->where('id', $room_id)
             ->first();

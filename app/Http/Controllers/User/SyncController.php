@@ -28,6 +28,8 @@ class SyncController extends Controller
             return $data;
         }
 
+        $data["datetime"] = date('Y-m-d H:i:s');
+
         $room = Room::where('id', $room_id)->first();
         $data['room_name'] = $room['name'];
 
