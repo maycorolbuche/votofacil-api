@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Device;
+use App\Helpers\BallotBox;
 use Illuminate\Http\Request;
 
 class DeviceController extends Controller
@@ -36,6 +37,7 @@ class DeviceController extends Controller
         }
 
         if ($device->save()) {
+            BallotBox::check($room_id);
             return response()->json($device, 200);
         } else {
             return response()->json(['error' => 'Não foi possível atualizar os dados.'], 500);

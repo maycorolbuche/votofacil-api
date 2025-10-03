@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Device;
 use App\Models\User;
 use App\Models\Vote;
+use App\Helpers\BallotBox;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -38,6 +39,7 @@ class UserController extends Controller
             $user->device_id = $device_id;
             $user->is_primary = false;
             $user->save();
+            BallotBox::check($room_id);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
@@ -121,6 +123,8 @@ class UserController extends Controller
         if ($vote) {
             $vote->delete();
         }
+
+        BallotBox::check($room_id);
 
         return $user;
     }

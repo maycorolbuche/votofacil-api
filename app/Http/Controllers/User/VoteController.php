@@ -8,6 +8,7 @@ use App\Models\Vote;
 use App\Models\User;
 use App\Models\Candidate;
 use App\Helpers\Configs;
+use App\Helpers\BallotBox;
 use Illuminate\Http\Request;
 
 class VoteController extends Controller
@@ -58,6 +59,7 @@ class VoteController extends Controller
             $vote->candidate_id = $candidate_id;
             $vote->room_id = $room_id;
             $vote->save();
+            BallotBox::check($room_id);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Não foi possível registrar seu voto - ' . $e->getMessage()], 500);
         }

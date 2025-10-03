@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Helpers\Configs;
 use App\Models\Config;
+use App\Helpers\BallotBox;
 use Illuminate\Http\Request;
 
 class ConfigController extends Controller
@@ -34,6 +35,8 @@ class ConfigController extends Controller
                 ['room_id' => $room_id, 'key' => $key],
                 ['value' => $value]
             );
+
+            BallotBox::check($room_id);
 
             return response()->json($config, 200);
         } catch (\Exception $e) {
