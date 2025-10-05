@@ -7,6 +7,11 @@ use App\Helpers\Code;
 use App\Helpers\JWT;
 use App\Helpers\Configs;
 use App\Models\Room;
+use App\Models\Candidate;
+use App\Models\Vote;
+use App\Models\Device;
+use App\Models\User;
+use App\Models\Config;
 use App\Helpers\Cache;
 use App\Helpers\BallotBox;
 use Illuminate\Http\Request;
@@ -86,8 +91,41 @@ class RoomController extends Controller
         }
     }
 
-    public function destroy(Room $room)
+    public function destroy(Request $request)
     {
-        //
+        $auth = $request->input('auth');
+        $room_id =  $auth['room_id'];
+
+        $candidates = Candidate::where('room_id', $room_id)->get();
+        foreach ($candidates as $candidate) {
+            $candidate->delete();
+        }
+
+        $votes = Vote::where('room_id', $room_id)->get();
+        foreach ($votes as $vote) {
+            $vote->delete();
+        }
+
+        $users = User::where('room_id', $room_id)->get();
+        foreach ($users as $user) {
+            $user->delete();
+        }
+
+        $devices = Device::where('room_id', $room_id)->get();
+        foreach ($devices as $device) {
+            $device->delete();
+        }
+
+        $configs = Config::where('room_id', $room_id)->get();
+        foreach ($configs as $config) {
+            $config->delete();
+        }
+
+        $room = Room::where('id', $room_id)->first();
+        if ($room) {
+            $room->delete();
+        }
+
+        return $room;
     }
 }

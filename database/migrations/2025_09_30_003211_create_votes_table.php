@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('votes', function (Blueprint $table) {
             $table->id();
             $table->foreignId('room_id')->constrained('rooms')->onDelete('cascade');
+            $table->foreignId('device_id')->constrained('devices')->onDelete('cascade');
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('candidate_id')->constrained('candidates')->onDelete('cascade');
             $table->timestamps();

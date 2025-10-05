@@ -5,7 +5,10 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use App\Helpers\JWT;
 use App\Models\Device;
+use App\Models\User;
 use App\Models\Room;
+use App\Models\Vote;
+use App\Helpers\BallotBox;
 use Illuminate\Http\Request;
 
 class DeviceController extends Controller
@@ -60,6 +63,7 @@ class DeviceController extends Controller
     {
         $auth = $request->input('auth');
         $device_id = $auth['device_id'];
+        $room_id = $auth['room_id'];
 
         if (!$auth) {
             return response()->json(['error' => 'Token inválido!'], 500);
@@ -69,6 +73,18 @@ class DeviceController extends Controller
         if ($device) {
             $device->delete();
         }
+
+        $users = User::where('device_id', $device_id)->get();
+        foreach ($users as $user) {
+            $user->delete();
+        }
+
+        $votes = Vote::where('device_id', $device_id)->get();
+        foreach ($votes as $vote) {
+            $vote->delete();
+        }
+
+        BallotBox::check($room_id);
 
         return $device;
     }

@@ -12,6 +12,7 @@ $router->group(['prefix' => 'admin'], function () use ($router) {
     $router->group(['middleware' => ['auth-admin']], function () use ($router) {
         $router->get('/room', 'Admin\RoomController@show');
         $router->patch('/room', 'Admin\RoomController@update');
+        $router->delete('/room', 'Admin\RoomController@destroy');
 
         $router->post('/candidate', 'Admin\CandidateController@store');
         $router->patch('/candidate', 'Admin\CandidateController@update');
@@ -39,6 +40,7 @@ $router->group(['prefix' => 'user'], function () use ($router) {
         $router->delete('/device', 'User\DeviceController@destroy');
 
         $router->post('/user', 'User\UserController@store');
+
         $router->post('/vote', 'User\VoteController@store');
 
         $router->get('/sync', 'User\SyncController@index');

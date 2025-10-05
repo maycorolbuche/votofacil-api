@@ -117,10 +117,10 @@ class UserController extends Controller
             }
         }
 
-        $vote = Vote::where('room_id', $room_id)
+        $votes = Vote::where('room_id', $room_id)
             ->where('user_id', $user->id)
-            ->first();
-        if ($vote) {
+            ->get();
+        foreach ($votes as $vote) {
             $vote->delete();
         }
 

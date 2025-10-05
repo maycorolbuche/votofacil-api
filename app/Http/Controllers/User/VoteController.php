@@ -57,6 +57,7 @@ class VoteController extends Controller
             $vote = new Vote;
             $vote->user_id = $user_id;
             $vote->candidate_id = $candidate_id;
+            $vote->device_id = $device_id;
             $vote->room_id = $room_id;
             $vote->save();
             BallotBox::check($room_id);
