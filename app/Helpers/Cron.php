@@ -63,7 +63,7 @@ class Cron
                 }
             }
         } catch (\Exception $e) {
-            Cache::forget('cron-last-run', Carbon::now());
+            Cache::forget('cron-last-run');
         }
 
         return true;
