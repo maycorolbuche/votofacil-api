@@ -30,13 +30,28 @@ class Room extends Model
         static::deleted($clearCache);
     }
 
+    public function devices()
+    {
+        return $this->hasMany(Device::class);
+    }
+
+    public function users()
+    {
+        return $this->hasMany(User::class);
+    }
+
     public function candidates()
     {
         return $this->hasMany(Candidate::class);
     }
 
-    public function devices()
+    public function configs()
     {
-        return $this->hasMany(Device::class);
+        return $this->hasMany(Config::class);
+    }
+
+    public function votes()
+    {
+        return $this->hasMany(Vote::class);
     }
 }
