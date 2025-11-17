@@ -4,7 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 
-class TrimStrings
+class TrimStringsMiddleware
 {
     public function handle($request, Closure $next)
     {

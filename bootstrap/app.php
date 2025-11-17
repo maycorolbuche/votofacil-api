@@ -73,7 +73,7 @@ $app->configure('app');
 
 $app->middleware([
     App\Http\Middleware\CorsMiddleware::class,
-    App\Http\Middleware\TrimStrings::class,
+    App\Http\Middleware\TrimStringsMiddleware::class,
     App\Http\Middleware\CronMiddleware::class,
 ]);
 

@@ -49,6 +49,7 @@ class SyncController extends Controller
             ->first();
         $data['room'] = $room;
         $data['configs'] = Configs::all();
+        $data['view']['hash'] = Configs::getValue('view.hash', '');
 
         $votes_count = Candidate::query()
             ->select([

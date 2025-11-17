@@ -28,6 +28,9 @@ $router->group(['prefix' => 'admin'], function () use ($router) {
 
         $router->post('/config', 'Admin\ConfigController@store');
 
+        $router->post('/view', 'Admin\ViewController@store');
+        $router->delete('/view', 'Admin\ViewController@destroy');
+
         $router->get('/sync', 'Admin\SyncController@index');
     });
 });

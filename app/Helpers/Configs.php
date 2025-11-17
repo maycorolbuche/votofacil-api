@@ -142,4 +142,15 @@ class Configs
 
         return $value;
     }
+    public static function getValue($key, $default = null)
+    {
+        $room_id = self::room_id();
+
+        $data = Config::where('room_id', $room_id)->where('key', $key)->first();
+        if (!$data) {
+            return $default;
+        }
+
+        return $data->value;
+    }
 }
