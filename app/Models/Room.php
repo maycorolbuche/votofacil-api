@@ -27,6 +27,7 @@ class Room extends Model
 
         static::created($clearCache);
         static::updated($clearCache);
+        static::updated([\App\Helpers\ProjectionState::class, 'record']);
         static::deleted($clearCache);
     }
 

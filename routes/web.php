@@ -6,6 +6,8 @@ $router->get('/', function () use ($router) {
 $router->get('/install', 'InstallController@index');
 $router->get('/clear', 'ClearController@index');
 
+$router->get('/view/{hash}', 'ProjectionController@show');
+
 $router->group(['prefix' => 'admin'], function () use ($router) {
     $router->post('/room', 'Admin\RoomController@store');
 
