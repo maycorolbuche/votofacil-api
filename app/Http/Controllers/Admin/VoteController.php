@@ -28,6 +28,8 @@ class VoteController extends Controller
             $vote->delete();
         }
 
+        \App\Helpers\ProjectionState::reset($room_id);
+
         return $votes;
     }
 }
