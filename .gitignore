@@ -1,12 +1,5 @@
-/vendor
-/.idea
-Homestead.json
-Homestead.yaml
+node_modules/
+.wrangler/
+.dev.vars
 .env
-.phpunit.result.cache
-
-*.sqlite
-
-*.cache
-.cache/
-.cache
+coverage/
