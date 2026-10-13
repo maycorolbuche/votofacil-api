@@ -2,7 +2,7 @@
 
 ## Processo
 
-1. Seguir README para criar D1 vazio, preencher database_id, configurar CORS, aplicar migration remota, publicar Worker e cadastrar JWT_SECRET.
+1. Seguir README para usar o D1 já configurado no binding DB, configurar CORS, aplicar migration remota, publicar Worker e cadastrar JWT_SECRET. Outra conta exige criar seu próprio banco e trocar database_id.
 2. Validar a API na URL workers.dev usando um app de homologação ou cliente HTTP. Nenhum dado antigo precisa ser importado.
 3. Confirmar criação de sala/token, ingresso do dispositivo, cadastro principal/adicional, aprovação, candidatos individuais/em lote e configurações.
 4. Abrir votação, enviar múltiplas escolhas, confirmar bloqueio de duplicidade/limite/dispositivo pendente e fechamento manual/automático.
@@ -22,4 +22,4 @@ Cron `0 * * * *` roda em UTC e usa as políticas de oito/48 horas. Execute acomp
 
 O schema utiliza triggers, chaves estrangeiras compostas e view com janela SQL. Migrations são versionadas e aplicadas por Wrangler, nunca por endpoint público. Nova mudança de schema exige novo arquivo de migration, sem editar migrations já aplicadas.
 
-A CI não publica. Configurar GitHub como fonte de build da Cloudflare é opcional; antes de automatizar produção, configure credenciais/ambiente de implantação separadamente. Não há tentativa de acessar sua conta ou publicar recursos nesta PR.
+O GitHub Actions não publica. Workers Builds é uma integração separada da Cloudflare e pode publicar conforme o comando/branch configurados no painel. O erro 10181 recebido no deploy foi causado pelo database_id de exemplo preenchido com zeros; o binding foi atualizado para o ID informado. Aplicar migrations remotas e cadastrar JWT_SECRET continuam sendo passos necessários: um deploy bem-sucedido não comprova que as tabelas e o segredo existem.

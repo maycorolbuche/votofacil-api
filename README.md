@@ -9,10 +9,9 @@ Pré-requisitos: Node.js 24+, npm, uma conta Cloudflare e acesso ao repositório
 ```sh
 npm ci
 npx wrangler login
-npx wrangler d1 create votofacil
 ```
 
-O último comando cria um D1 e mostra seu `database_id`. Copie esse UUID para `d1_databases[0].database_id` em `wrangler.jsonc`, substituindo o UUID de zeros. Preserve `binding: "DB"` e `database_name: "votofacil"`. O Worker acessa o banco pelo binding; não há host, porta, usuário ou senha de MySQL.
+O binding `DB` já aponta para o D1 informado pelo responsável pelo projeto (`3389b3a3-a6e4-493a-8730-a768abf38bb6`). Na conta original, use esse banco existente. Para instalar em outra conta, execute `npx wrangler d1 create votofacil` e substitua `d1_databases[0].database_id` em `wrangler.jsonc` pelo UUID recebido. Preserve `binding: "DB"` e `database_name: "votofacil"`. O Worker acessa o banco pelo binding; não há host, porta, usuário ou senha de MySQL.
 
 Configure `vars.CORS_ORIGINS` em `wrangler.jsonc`. Pode conter várias origens separadas por vírgula, por exemplo `https://app.exemplo.com,https://outro.exemplo.com`. Origem inclui protocolo e porta quando houver, sem caminho e sem barra final. O padrão `*` aceita qualquer origem sem cookies/credenciais; a autenticação usa Authorization. Para um app público com origem conhecida, prefira informar sua origem.
 
@@ -55,7 +54,7 @@ npm test
 npx wrangler deploy --dry-run
 ```
 
-O banco local é separado do remoto. A suíte usa bancos descartáveis em memória e um teste no runtime Workers/D1 (Miniflare), sem acessar produção. A CI verifica tipos, testes e empacotamento; não publica automaticamente.
+O banco local é separado do remoto. A suíte usa bancos descartáveis em memória e um teste no runtime Workers/D1 (Miniflare), sem acessar produção. O GitHub Actions verifica tipos, testes e empacotamento; não publica. A integração Workers Builds da Cloudflare pode executar deploy automaticamente conforme suas configurações no painel.
 
 ## Documentação
 
