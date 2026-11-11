@@ -2,6 +2,7 @@ name: Worker tests
 on: [push, pull_request]
 jobs:
   test:
+    name: "CI / Validação"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
